@@ -35,6 +35,9 @@ generatorConfig.xml
 third-party/nacos/derby.log
 third-party/nacos/data/
 third-party/nacos/work/
+<<<<<<< HEAD
 
 ### Mac 访达 ###
 .DS_Store
+=======
+>>>>>>> develop
