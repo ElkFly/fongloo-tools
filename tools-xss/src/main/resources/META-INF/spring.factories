@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    com.itheima.pinda.xss.XssAuthConfiguration
+com.fongloo.xss.XssAuthConfiguration

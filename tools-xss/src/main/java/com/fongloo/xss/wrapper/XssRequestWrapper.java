@@ -1,7 +1,7 @@
-package com.fongloo.wrapper;
+package com.fongloo.xss.wrapper;
 
 import cn.hutool.core.util.StrUtil;
-import com.fongloo.utils.XssUtils;
+import com.fongloo.xss.utils.XssUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;

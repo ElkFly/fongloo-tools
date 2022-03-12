@@ -1,4 +1,4 @@
-package com.fongloo.utils;
+package com.fongloo.xss.utils;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;

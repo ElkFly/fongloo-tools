@@ -1,4 +1,4 @@
-package com.fongloo.converter;
+package com.fongloo.xss.converter;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.JsonParser;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fongloo.utils.XssUtils;
+import com.fongloo.xss.utils.XssUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

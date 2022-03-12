@@ -1,10 +1,12 @@
-package com.fongloo;
+package com.fongloo.xss;
 
-import com.fongloo.converter.XssStringJsonDeserializer;
-import com.fongloo.filter.XssFilter;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fongloo.xss.converter.XssStringJsonDeserializer;
+import com.fongloo.xss.filter.XssFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,17 +17,24 @@ import java.util.StringJoiner;
  *
  */
 public class XssAuthConfiguration {
-    /**
-     * 配置跨站攻击 反序列化处理器
-     *
-     * @return
-     */
-    @Bean
-    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer2() {
-        return builder -> builder
-                .deserializerByType(String.class, new XssStringJsonDeserializer());
-    }
 
+//    @Bean
+//    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer2() {
+//        return builder -> builder
+//                .deserializerByType(String.class, new XssStringJsonDeserializer());
+//    }
+
+
+    @Bean
+    @Primary
+    public ObjectMapper configureObjectMapper() {
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+//        javaTimeModule.addSerializer(LocalDateTime.class, new JacksonLocalDateTimeSerializer());
+        javaTimeModule.addDeserializer(String.class, new XssStringJsonDeserializer());
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(javaTimeModule);
+        return objectMapper;
+    }
 
     /**
      * 配置跨站攻击过滤器
