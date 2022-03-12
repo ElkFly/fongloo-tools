@@ -11,7 +11,7 @@ import java.util.Map;
 
 
 /**
- * 根据继承下来的请求所过滤
+ * 此方法拦截到参数名，参数值，请求头，多参数进行过滤
  */
 @Slf4j
 public class XssRequestWrapper extends HttpServletRequestWrapper {

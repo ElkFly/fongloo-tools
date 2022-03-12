@@ -24,7 +24,6 @@ public class XssAuthConfiguration {
 //                .deserializerByType(String.class, new XssStringJsonDeserializer());
 //    }
 
-
     @Bean
     @Primary
     public ObjectMapper configureObjectMapper() {
