@@ -16,6 +16,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>tools-xss</module>
+        <module>tools-validator</module>
     </modules>
 
     <properties>
@@ -31,6 +32,9 @@
 
         <!--hutool-->
         <hutool.version>5.7.21</hutool.version>
+
+        <!--表单验证 validator-->
+        <validator.version>6.2.2.Final</validator.version>
 
     </properties>
 
@@ -50,6 +54,11 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-json</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${validator.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
