@@ -17,6 +17,7 @@
     <modules>
         <module>tools-xss</module>
         <module>tools-validator</module>
+        <module>tools-log</module>
     </modules>
 
     <properties>
@@ -53,6 +54,11 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-json</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-extra</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
             <dependency>
