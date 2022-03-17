@@ -3,7 +3,6 @@ package com.fongloo.log.event;
 import com.fongloo.log.entity.OptLogDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Async;

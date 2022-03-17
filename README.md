@@ -138,3 +138,169 @@ public class ExceptionConfiguration {
     }
 }
 ~~~
+
+------
+
+## tools-log
+
+tools-log模块定位为日志模块，本质也是一个starter。提供的日志功能主要有两个方面：
+
+1、通过logback框架可以在控制台或者日志文件记录日志信息
+
+2、拦截用户请求，将操作日志进行处理，列如：你可以保存到数据库，也可以进行用户行为分析。
+
+### 如何使用
+1. 在resources下logback配置文件logback-base.xml和logback-spring.xml
+
+`logback-base.xml`
+~~~xml
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <contextName>logback</contextName>
+    <!--
+		name的值是变量的名称，value的值时变量定义的值
+		定义变量后，可以使“${}”来使用变量
+	-->
+    <property name="log.path" value="d:\\logs" />
+
+    <!-- 彩色日志 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule
+            conversionWord="clr"
+            converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule
+            conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+    <!--输出到控制台-->
+    <appender name="LOG_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+            <!-- 设置字符集 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--输出到文件-->
+    <appender name="LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文件的路径及文件名 -->
+        <file>${log.path}/logback.log</file>
+        <!--日志文件输出格式-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 每天日志归档路径以及格式 -->
+            <fileNamePattern>${log.path}/info/log-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文件保留天数-->
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+    </appender>
+</included>
+~~~
+
+`logback-spring.xml`
+
+~~~xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--引入其他配置文件-->
+    <include resource="logback-base.xml" />
+
+    <!--开发环境-->
+    <springProfile name="dev">
+        <logger name="com.fongloo" additivity="false" level="debug">
+            <appender-ref ref="LOG_CONSOLE"/>
+        </logger>
+    </springProfile>
+    <!--生产环境-->
+    <springProfile name="pro">
+        <logger name="com.fongloo" additivity="false" level="info">
+            <appender-ref ref="LOG_FILE"/>
+        </logger>
+    </springProfile>
+
+    <root level="info">
+        <appender-ref ref="LOG_CONSOLE" />
+        <appender-ref ref="LOG_FILE" />
+    </root>
+</configuration>
+~~~
+
+2. 在 `application.yml`中加入如下配置
+~~~yaml
+log:
+    enabled: true
+logging:
+  #在Spring Boot项目中默认加载类路径下的logback-spring.xml文件
+  config: classpath:logback-spring.xml
+spring:
+  profiles:
+    # 生产环境
+    active: dev 
+~~~
+
+3. 编写Controller时加上`@SysLog`注解
+
+~~~java
+@RestController
+@RequestMapping("/test")
+@Api(tags = "测试")
+public class TestController {
+    
+    @SysLog("分页查询用户")//记录操作日志
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "页码",
+                    required = true, type = "Integer"),
+            @ApiImplicitParam(name = "pageSize", value = "每页条数",
+                    required = true, type = "Integer"),
+    })
+    @ApiOperation(value = "分页查询用户信息")
+    @GetMapping(value = "page/{pageNum}/{pageSize}")
+    public String findByPage(@PathVariable Integer pageNum,
+                             @PathVariable Integer pageSize) {
+        return "OK";
+    }
+}
+~~~
+
+4. 获取到日志实体类
+```java
+   @Configuration
+   public class TestListener {
+       @Bean
+       @ConditionalOnMissingBean
+       public SysLogListener sysLogListener() {
+           SysLogListener sysLogListener = new SysLogListener(optLogDTO -> {
+               System.out.println(optLogDTO);
+               
+              // TODO: 处理日志 optLogDTO
+              
+           });
+           return sysLogListener;
+       }
+   }
+```
+或者
+```java
+   @Component
+   public class TestListener implements ApplicationListener<SysLogEvent> {
+       @Override
+       public void onApplicationEvent(SysLogEvent event) {
+           OptLogDTO optLogDTO= (OptLogDTO)event.getSource();
+           System.out.println(optLogDTO);
+           
+           // TODO: 处理日志 optLogDTO
+       }
+   }
+```
+
+---
+

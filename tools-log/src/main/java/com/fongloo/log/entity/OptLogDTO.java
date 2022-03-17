@@ -3,7 +3,6 @@ package com.fongloo.log.entity;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
