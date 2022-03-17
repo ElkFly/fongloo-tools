@@ -4,6 +4,8 @@ import com.fongloo.log.annotation.SysLog;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 
 /**
@@ -14,6 +16,7 @@ public class LogUtils {
 
     /**
      * 获取加上@SysLog注解的方法的参数信息
+     *
      * @param joinPoint
      * @return
      */
@@ -42,9 +45,23 @@ public class LogUtils {
             }
             return description;
         } catch (ClassNotFoundException e) {
-            log.error("找不到这个类: {}", className);
+            log.warn("找不到这个类: {}", className);
             return "";
         }
+    }
 
+
+    /**
+     * 获取堆栈信息
+     *
+     * @param throwable 异常
+     * @return
+     */
+    public static String getStackTrace(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        try (PrintWriter pw = new PrintWriter(sw)) {
+            throwable.printStackTrace(pw);
+            return sw.toString();
+        }
     }
 }

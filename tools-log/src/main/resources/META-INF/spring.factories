@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.fongloo.log.LogAutoConfiguration
+org.springframework.context.ApplicationContextInitializer=\
+    com.fongloo.log.init.ApplicationLoggerInitializer
