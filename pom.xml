@@ -18,6 +18,7 @@
         <module>tools-xss</module>
         <module>tools-validator</module>
         <module>tools-log</module>
+        <module>tools-jwt</module>
     </modules>
 
     <properties>
@@ -43,6 +44,9 @@
 
         <!--fastjson-->
         <fastjson.version>1.2.79</fastjson.version>
+
+        <!--jjwt-->
+        <jjwt.version>0.9.1</jjwt.version>
 
     </properties>
 
@@ -83,6 +87,11 @@
                 <artifactId>knife4j-aggregation-spring-boot-starter</artifactId>
                 <!--在引用时请在maven中央仓库搜索aggregation最新版本号-->
                 <version>${knife4j.aggregation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
