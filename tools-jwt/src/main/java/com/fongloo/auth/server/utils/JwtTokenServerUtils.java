@@ -4,7 +4,6 @@ import com.fongloo.auth.server.properties.AuthServerProperties;
 import com.fongloo.auth.utils.JwtHelper;
 import com.fongloo.auth.utils.JwtUserInfo;
 import com.fongloo.auth.utils.Token;
-import io.jsonwebtoken.Jwt;
 import lombok.AllArgsConstructor;
 
 /**
