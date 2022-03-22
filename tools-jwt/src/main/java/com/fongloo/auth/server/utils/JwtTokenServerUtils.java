@@ -19,7 +19,8 @@ public class JwtTokenServerUtils {
 
     /**
      * 生成Token
-     * @param jwtInfo
+     *
+     * @param jwtUserInfo
      * @param expire
      * @return
      */

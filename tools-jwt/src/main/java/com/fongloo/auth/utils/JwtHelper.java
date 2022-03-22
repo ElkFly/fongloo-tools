@@ -111,6 +111,7 @@ public class JwtHelper {
 
     /**
      * 生成Token
+     *
      * @param jwtBuilder
      * @param priKeyPath
      * @param expire
@@ -126,7 +127,7 @@ public class JwtHelper {
                     .compact();
 
             // token
-            return new Token(strToken,expire);
+            return new Token(strToken, expire);
 
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             // TODO 此处应该打印错误信息，并抛出自定义异常
@@ -136,6 +137,7 @@ public class JwtHelper {
 
     /**
      * LocalDateTime对象转换为Date对象
+     *
      * @param localDateTime
      * @return
      */

@@ -42,6 +42,7 @@ public class RsaKeyHelper {
 
     /**
      * 获取秘钥 用于生成Token
+     *
      * @param fileName
      * @return
      * @throws IOException
@@ -51,7 +52,7 @@ public class RsaKeyHelper {
     public PrivateKey getPrivateKey(String fileName) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         InputStream priKeyStream = RsaKeyHelper.class.getClassLoader().getResourceAsStream(fileName);
 
-        try (DataInputStream dis = new DataInputStream(priKeyStream)){
+        try (DataInputStream dis = new DataInputStream(priKeyStream)) {
             byte[] bytes = new byte[priKeyStream.available()];
             dis.readFully(bytes);
 

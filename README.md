@@ -304,3 +304,143 @@ public class TestController {
 
 ---
 
+## tools-jwt
+
+tools-jwt模块的定位是对于jwt令牌相关操作进行封装，为认证、鉴权提供支撑。
+
+提供的功能：生成jwt token、解析jwt token
+
+### JWT介绍
+
+JWT全称为JSON Web Token，是目前最流行的跨域身份验证解决方案。JWT是为了在网络应用环境间传递声明而制定的一种基于JSON的开放标准。
+
+JWT特别适用于分布式站点的单点登录（SSO）场景。JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，也可被加密。
+
+###的数据结构
+
+JWT其实就是一个很长的字符串，字符之间通过"."分隔符分为三个子串，各字串之间没有换行符。每一个子串表示了一个功能块，总共有三个部分：**JWT头(header)**、**有效载荷(payload)**、**签名(signature)**，如下图所示：
+
+
+#### JWT头
+
+JWT头是一个描述JWT元数据的JSON对象，通常如下所示：
+
+~~~json
+{"alg": "HS256","typ": "JWT"}
+~~~
+
+alg：表示签名使用的算法，默认为HMAC SHA256（写为HS256）
+
+typ：表示令牌的类型，JWT令牌统一写为JWT
+
+最后，使用Base64 URL算法将上述JSON对象转换为字符串
+
+#### 有效载荷
+
+有效载荷，是JWT的主体内容部分，也是一个JSON对象，包含需要传递的数据。
+
+有效载荷部分规定有如下七个默认字段供选择：
+
+~~~makefile
+iss：发行人
+exp：到期时间
+sub：主题
+aud：用户
+nbf：在此之前不可用
+iat：发布时间
+jti：JWT ID用于标识该JWT
+~~~
+
+除以上默认字段外，还可以自定义私有字段。
+
+最后，同样使用Base64 URL算法将有效载荷部分JSON对象转换为字符串
+
+#### 签名
+
+签名实际上是一个加密的过程，是对上面两部分数据通过指定的算法生成哈希，以确保数据不会被篡改。
+
+首先需要指定一个密码（secret），该密码仅仅保存在服务器中，并且不能向用户公开。然后使用JWT头中指定的签名算法（默认情况下为HMAC SHA256），根据以下公式生成签名哈希：
+
+~~~dockerfile
+HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload),secret)
+~~~
+
+在计算出签名哈希后，JWT头，有效载荷和签名哈希的三个部分组合成一个字符串，每个部分用"."分隔，就构成整个JWT对象。
+
+### JWT签名算法
+
+JWT签名算法中，一般有两个选择：HS256和RS256。
+
+HS256 (带有 SHA-256 的 HMAC )是一种对称加密算法, 双方之间仅共享一个密钥。由于使用相同的密钥生成签名和验证签名, 因此必须注意确保密钥不被泄密。
+
+RS256 (采用SHA-256 的 RSA 签名) 是一种非对称加密算法, 它使用公共/私钥对: JWT的提供方采用私钥生成签名, JWT 的使用方获取公钥以验证签名。
+
+### tools-jwt使用
+
+tools-jwt底层是基于`jjwt`进行`jwt令牌`的生成和解析的。为了方便使用，在tools-jwt模块中封装了两个工具类：`JwtTokenServerUtils`和`JwtTokenClientUtils`。
+
+`JwtTokenServerUtils`主要是提供给权限服务的，类中包含`生成jwt`和`解析jwt`两个方法
+
+`JwtTokenClientUtils`主要是提供给网关服务的，类中只有一个`解析jwt`的方法
+
+需要注意的是tools-jwt并不是starter，所以如果只是在项目中引入他的maven坐标并不能直接使用其提供的工具类。需要在启动类上加入tools-jwt模块中定义的注解`@EnableAuthServer`或者`@EnableAuthClient`。
+
+tools-jwt使用的签名算法为`RS256`，需要我们自己的应用来提供一对公钥和私钥，然后在`application.yml`中进行配置即可。
+
+1. `tools-jwt/src/test/java/RsaKeyHelperTest.java` 生成自己的`pri.key`和`pub.key`
+2. `tools-jwt/src/test/java/JwtHelperTest.java` 测试是否正常
+3. 复制到自己的项目的`resources`目录下
+4. 在自己的项目`application.yml`配置文件中添加
+   ```yml
+    server:
+      port: 8080
+   # JWT相关配置
+    authentication:
+      user:
+        expire: 3600 #令牌失效时间
+        priKey: keys/pri.key #私钥路径
+        pubKey: keys/pub.key #公钥路径
+   ```
+5. 为客户端生成和解析`jwt令牌`
+   ```java
+   @RestController
+   @RequestMapping("/test")
+   public class UserController {
+   
+   @Autowired
+   private JwtTokenServerUtils jwtTokenServerUtils;
+   
+       //用户登录功能，如果登录成功则签发jwt令牌给客户端
+       @GetMapping("/login")
+       public Token login(){
+           String userName = "admin";
+           String password = "CUAdmin";
+           //查询数据库进行用户名密码校验...
+   
+           //如果校验通过，则为客户端生成jwt令牌
+           JwtUserInfo jwtUserInfo = new JwtUserInfo();
+           jwtUserInfo.setName(userName);
+           jwtUserInfo.setOrgId(10L);
+           jwtUserInfo.setUserId(1L);
+           jwtUserInfo.setAccount(userName);
+           jwtUserInfo.setStationId(20L);
+           Token token = jwtTokenServerUtils.generateUserToken(jwtUserInfo, null);
+   
+           //实际应该是在过滤器中进行jwt令牌的解析
+           JwtUserInfo userInfo = jwtTokenServerUtils.getUserInfo(token.getToken());
+           System.out.println(userInfo);
+           return token;
+       }
+   }
+   ```
+6. 为需要生成`jwt令牌`的服务启动类上添加`@EnableAuthServer`注解
+   ```java
+   @SpringBootApplication
+   @EnableAuthServer //启用jwt服务端认证功能
+   public class MyJwtApplication {
+       public static void main(String[] args) {
+           SpringApplication.run(MyJwtApplication.class,args);
+       }
+   }
+   ```
+   >`@EnableAuthServer`注解包含生成和解析jwt的方法

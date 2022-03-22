@@ -19,12 +19,13 @@ public class JwtTokenClientUtils {
 
     /**
      * 解析Token 获取到用户信息
+     *
      * @param token
      * @return
      */
     public JwtUserInfo getUserInfo(String token) {
         AuthClientProperties.TokenInfo user = authClientProperties.getUser();
-        return JwtHelper.getJwtFromToken(token,user.getPubKey());
+        return JwtHelper.getJwtFromToken(token, user.getPubKey());
     }
 
 }
