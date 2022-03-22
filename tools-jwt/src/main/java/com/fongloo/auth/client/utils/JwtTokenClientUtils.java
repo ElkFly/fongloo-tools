@@ -1,11 +1,12 @@
 package com.fongloo.auth.client.utils;
 
 import com.fongloo.auth.client.properties.AuthClientProperties;
+import com.fongloo.auth.utils.JwtHelper;
 import com.fongloo.auth.utils.JwtUserInfo;
 import lombok.AllArgsConstructor;
 
 /**
- * 客户端工具
+ * JwtToken客户端工具
  */
 @AllArgsConstructor
 public class JwtTokenClientUtils {
@@ -17,13 +18,13 @@ public class JwtTokenClientUtils {
     private AuthClientProperties authClientProperties;
 
     /**
-     * 解析Token
+     * 解析Token 获取到用户信息
      * @param token
      * @return
      */
     public JwtUserInfo getUserInfo(String token) {
         AuthClientProperties.TokenInfo user = authClientProperties.getUser();
-
+        return JwtHelper.getJwtFromToken(token,user.getPubKey());
     }
 
 }
