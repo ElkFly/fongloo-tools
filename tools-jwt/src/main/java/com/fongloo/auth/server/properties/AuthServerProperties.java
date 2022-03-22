@@ -1,32 +1,38 @@
-package com.fongloo.auth.client.properties;
+package com.fongloo.auth.server.properties;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import static com.fongloo.auth.client.properties.AuthClientProperties.PREFIX;
+import static com.fongloo.auth.server.properties.AuthServerProperties.PREFIX;
 
 
 /**
- * 客户端认证配置
+ * 服务端配置
  */
 @Data
 @NoArgsConstructor
 @ConfigurationProperties(prefix = PREFIX)
-public class AuthClientProperties {
+public class AuthServerProperties {
     public static final String PREFIX = "authentication";
+
 
     private TokenInfo user;
 
     @Data
     public static class TokenInfo {
         /**
-         * 请求头名称
+         * 过期时间
          */
-        private String headerName;
+        private Integer expire = 7200;
 
         /**
-         * 公钥 解密 网关使用
+         * 加密服务使用
+         */
+        private String priKey;
+
+        /**
+         * 解密
          */
         private String pubKey;
     }

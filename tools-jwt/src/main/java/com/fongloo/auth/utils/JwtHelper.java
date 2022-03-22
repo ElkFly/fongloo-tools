@@ -1,9 +1,16 @@
 package com.fongloo.auth.utils;
 
+import cn.hutool.core.date.DateUnit;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Slf4j
 public class JwtHelper {
@@ -12,6 +19,7 @@ public class JwtHelper {
 
     /**
      * 获取Token中的用户信息
+     *
      * @param token
      * @param pubKeyPath
      * @return
@@ -37,6 +45,7 @@ public class JwtHelper {
 
     /**
      * String类型转换为Long类型
+     *
      * @param value
      * @return
      */
@@ -80,4 +89,60 @@ public class JwtHelper {
         }
         return null;
     }
+
+    /**
+     * 根据用户信息生成Token
+     *
+     * @param jwtUserInfo 用户信息
+     * @param priKey      私钥
+     * @param expire      有效期
+     * @return
+     */
+    public static Token generateUserToken(JwtUserInfo jwtUserInfo, String priKey, Integer expire) {
+        // TODO 此处的值应为常量 所以需要封装一个常量对象
+        JwtBuilder jwtBuilder = Jwts.builder()
+                .setSubject(String.valueOf(jwtUserInfo.getUserId()))
+                .claim("account", jwtUserInfo.getAccount())
+                .claim("name", jwtUserInfo.getName())
+                .claim("orgId", jwtUserInfo.getOrgId())
+                .claim("stationid", jwtUserInfo.getStationId());
+        return generateToken(jwtBuilder, priKey, expire);
+    }
+
+    /**
+     * 生成Token
+     * @param jwtBuilder
+     * @param priKeyPath
+     * @param expire
+     * @return
+     */
+    private static Token generateToken(JwtBuilder jwtBuilder, String priKeyPath, Integer expire) {
+        try {
+            String strToken = jwtBuilder
+                    // 设置有效时间
+                    .setExpiration(localDateTimeToDate(LocalDateTime.now().plusSeconds(expire)))
+                    // 设置加密算法
+                    .signWith(SignatureAlgorithm.RS256, RSA_KEY_HELPER.getPrivateKey(priKeyPath))
+                    .compact();
+
+            // token
+            return new Token(strToken,expire);
+
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            // TODO 此处应该打印错误信息，并抛出自定义异常
+        }
+        return null;
+    }
+
+    /**
+     * LocalDateTime对象转换为Date对象
+     * @param localDateTime
+     * @return
+     */
+    private static Date localDateTimeToDate(LocalDateTime localDateTime) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+        return Date.from(zonedDateTime.toInstant());
+    }
+
 }
