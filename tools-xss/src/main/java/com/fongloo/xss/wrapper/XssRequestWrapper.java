@@ -27,7 +27,7 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
     /**
      * 过滤从客户端传递过来的参数值
      *
-     * @param paramString 参数值
+     * @param paramStringValue 参数值
      * @return
      */
     @Override
