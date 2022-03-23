@@ -1,19 +1,23 @@
 ## tools-xss
+
 模块定位为防跨站脚本攻击（XSS），通过对用户在页面输入的 HTML / CSS / JavaScript 等内容进行检验和清理，确保输入内容符合应用规范，保障系统的安全。
 
 ### XSS介绍
 
-XSS：跨站脚本攻击(Cross Site Scripting)，为不和 CSS混淆，故将跨站脚本攻击缩写为XSS。XSS是指恶意攻击者往Web页面里插入恶意Script代码，当用户浏览该页时，嵌入其中Web里面的Script代码会被执行，从而达到恶意攻击用户的目的。有点类似于sql注入。
+XSS：跨站脚本攻击(Cross Site Scripting)，为不和
+CSS混淆，故将跨站脚本攻击缩写为XSS。XSS是指恶意攻击者往Web页面里插入恶意Script代码，当用户浏览该页时，嵌入其中Web里面的Script代码会被执行，从而达到恶意攻击用户的目的。有点类似于sql注入。
 
 XSS攻击原理：
 
-HTML是一种超文本标记语言，通过将一些字符特殊地对待来区别文本和标记，例如，小于符号（<）被看作是HTML标签的开始，<title>与</title>之间的字符是页面的标题等等。当动态页面中插入的内容含有这些特殊字符时，用户浏览器会将其误认为是插入了HTML标签，当这些HTML标签引入了一段JavaScript脚本时，这些脚本程序就将会在用户浏览器中执行。所以，当这些特殊字符不能被动态页面检查或检查出现失误时，就将会产生XSS漏洞。
+HTML是一种超文本标记语言，通过将一些字符特殊地对待来区别文本和标记，例如，小于符号（<）被看作是HTML标签的开始，<title>与</title>
+之间的字符是页面的标题等等。当动态页面中插入的内容含有这些特殊字符时，用户浏览器会将其误认为是插入了HTML标签，当这些HTML标签引入了一段JavaScript脚本时，这些脚本程序就将会在用户浏览器中执行。所以，当这些特殊字符不能被动态页面检查或检查出现失误时，就将会产生XSS漏洞。
 
 ### AntiSamy介绍
 
 AntiSamy是OWASP的一个开源项目，通过对用户输入的 HTML / CSS / JavaScript 等内容进行检验和清理，确保输入符合应用规范。AntiSamy被广泛应用于Web服务对存储型和反射型XSS的防御中。
 
 ### 如何使用
+
 1. 引入依赖
     ```xml
         <dependency>
@@ -32,7 +36,6 @@ AntiSamy是OWASP的一个开源项目，通过对用户输入的 HTML / CSS / Ja
     ```
 2. 直接开始使用，在所有参数进行传递时会自动过滤XSS。
 
-
 ## tools-validator
 
 pd-tools-validator模块定位为后端表单数据校验，其他模块可以直接引入tools-validator的maven坐标就可以使用其提供的表单校验功能。pd-tools-validator底层基于hibernate-validator实现。
@@ -48,7 +51,8 @@ pd-tools-validator模块定位为后端表单数据校验，其他模块可以�
 - [ ] 前端校验：主要是提高用户体验
 - [ ] 后端校验：主要是保证数据安全可靠
 
-校验参数基本上是一个体力活，而且冗余代码繁多，也影响代码的可读性，我们需要一个比较优雅的方式来解决这个问题。Hibernate Validator 框架刚好解决了这个问题，可以以很优雅的方式实现参数的校验，让业务代码和校验逻辑分开,不再编写重复的校验逻辑。
+校验参数基本上是一个体力活，而且冗余代码繁多，也影响代码的可读性，我们需要一个比较优雅的方式来解决这个问题。Hibernate Validator
+框架刚好解决了这个问题，可以以很优雅的方式实现参数的校验，让业务代码和校验逻辑分开,不再编写重复的校验逻辑。
 
 hibernate-validator优势：
 
@@ -59,12 +63,14 @@ hibernate-validator优势：
 hibernate-validator的maven坐标：
 
 ~~~xml
+
 <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>6.2.2.Final</version>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-validator</artifactId>
+    <version>6.2.2.Final</version>
 </dependency>
 ~~~
+
 `6.2.1.Final 后版本解决了log4j的问题`
 
 ### hibernate-validator常用注解
@@ -90,6 +96,7 @@ hibernate-validator提供的校验方式为在类的属性上加入相应的注�
 | @URL(protocol=,host,port) | 检查是否是一个有效的URL，如果提供了protocol，host等，则该URL还需满足提供的条件 |
 
 ### 如何使用
+
 1. 引入依赖
     ```xml
         <dependency>
@@ -112,6 +119,7 @@ hibernate-validator提供的校验方式为在类的属性上加入相应的注�
 
 3. 全局异常配置, 需要监听 `ConstraintViolationException`和`BindException`
    示例代码:
+
 ~~~java
 /**
  * 全局异常处理
@@ -119,19 +127,19 @@ hibernate-validator提供的校验方式为在类的属性上加入相应的注�
 @ControllerAdvice(annotations = {RestController.class, Controller.class})
 @ResponseBody
 public class ExceptionConfiguration {
-    @ExceptionHandler({ConstraintViolationException.class,BindException.class})
+    @ExceptionHandler({ConstraintViolationException.class, BindException.class})
     public String validateException(Exception ex, HttpServletRequest request) {
         ex.printStackTrace();
         String msg = null;
-        if(ex instanceof ConstraintViolationException){
-            ConstraintViolationException constraintViolationException = 
-                (ConstraintViolationException)ex;
-            Set<ConstraintViolation<?>> violations = 
-                constraintViolationException.getConstraintViolations();
+        if (ex instanceof ConstraintViolationException) {
+            ConstraintViolationException constraintViolationException =
+                    (ConstraintViolationException) ex;
+            Set<ConstraintViolation<?>> violations =
+                    constraintViolationException.getConstraintViolations();
             ConstraintViolation<?> next = violations.iterator().next();
             msg = next.getMessage();
-        }else if(ex instanceof BindException){
-            BindException bindException = (BindException)ex;
+        } else if (ex instanceof BindException) {
+            BindException bindException = (BindException) ex;
             msg = bindException.getBindingResult().getFieldError().getDefaultMessage();
         }
         return msg;
@@ -150,9 +158,11 @@ tools-log模块定位为日志模块，本质也是一个starter。提供的日�
 2、拦截用户请求，将操作日志进行处理，列如：你可以保存到数据库，也可以进行用户行为分析。
 
 ### 如何使用
+
 1. 在resources下logback配置文件logback-base.xml和logback-spring.xml
 
 `logback-base.xml`
+
 ~~~xml
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
@@ -161,18 +171,21 @@ tools-log模块定位为日志模块，本质也是一个starter。提供的日�
 		name的值是变量的名称，value的值时变量定义的值
 		定义变量后，可以使“${}”来使用变量
 	-->
-    <property name="log.path" value="d:\\logs" />
+    <property name="log.path" value="d:\\logs"/>
 
     <!-- 彩色日志 -->
     <!-- 彩色日志依赖的渲染类 -->
     <conversionRule
             conversionWord="clr"
-            converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+            converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
     <conversionRule
-            conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
-    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+            conversionWord="wex"
+            converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
     <!-- 彩色日志格式 -->
-    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
     <!--输出到控制台-->
     <appender name="LOG_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -212,7 +225,7 @@ tools-log模块定位为日志模块，本质也是一个starter。提供的日�
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!--引入其他配置文件-->
-    <include resource="logback-base.xml" />
+    <include resource="logback-base.xml"/>
 
     <!--开发环境-->
     <springProfile name="dev">
@@ -228,16 +241,17 @@ tools-log模块定位为日志模块，本质也是一个starter。提供的日�
     </springProfile>
 
     <root level="info">
-        <appender-ref ref="LOG_CONSOLE" />
-        <appender-ref ref="LOG_FILE" />
+        <appender-ref ref="LOG_CONSOLE"/>
+        <appender-ref ref="LOG_FILE"/>
     </root>
 </configuration>
 ~~~
 
 2. 在 `application.yml`中加入如下配置
+
 ~~~yaml
 log:
-    enabled: true
+  enabled: true
 logging:
   #在Spring Boot项目中默认加载类路径下的logback-spring.xml文件
   config: classpath:logback-spring.xml
@@ -250,11 +264,12 @@ spring:
 3. 编写Controller时加上`@SysLog`注解
 
 ~~~java
+
 @RestController
 @RequestMapping("/test")
 @Api(tags = "测试")
 public class TestController {
-    
+
     @SysLog("分页查询用户")//记录操作日志
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "页码",
@@ -272,34 +287,39 @@ public class TestController {
 ~~~
 
 4. 获取到日志实体类
+
 ```java
-   @Configuration
-   public class TestListener {
-       @Bean
-       @ConditionalOnMissingBean
-       public SysLogListener sysLogListener() {
-           SysLogListener sysLogListener = new SysLogListener(optLogDTO -> {
-               System.out.println(optLogDTO);
-               
-              // TODO: 处理日志 optLogDTO
-              
-           });
-           return sysLogListener;
-       }
-   }
+
+@Configuration
+public class TestListener {
+    @Bean
+    @ConditionalOnMissingBean
+    public SysLogListener sysLogListener() {
+        SysLogListener sysLogListener = new SysLogListener(optLogDTO -> {
+            System.out.println(optLogDTO);
+
+            // TODO: 处理日志 optLogDTO
+
+        });
+        return sysLogListener;
+    }
+}
 ```
+
 或者
+
 ```java
-   @Component
-   public class TestListener implements ApplicationListener<SysLogEvent> {
-       @Override
-       public void onApplicationEvent(SysLogEvent event) {
-           OptLogDTO optLogDTO= (OptLogDTO)event.getSource();
-           System.out.println(optLogDTO);
-           
-           // TODO: 处理日志 optLogDTO
-       }
-   }
+
+@Component
+public class TestListener implements ApplicationListener<SysLogEvent> {
+    @Override
+    public void onApplicationEvent(SysLogEvent event) {
+        OptLogDTO optLogDTO = (OptLogDTO) event.getSource();
+        System.out.println(optLogDTO);
+
+        // TODO: 处理日志 optLogDTO
+    }
+}
 ```
 
 ---
@@ -316,17 +336,20 @@ JWT全称为JSON Web Token，是目前最流行的跨域身份验证解决方案
 
 JWT特别适用于分布式站点的单点登录（SSO）场景。JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，也可被加密。
 
-###的数据结构
+### 的数据结构
 
-JWT其实就是一个很长的字符串，字符之间通过"."分隔符分为三个子串，各字串之间没有换行符。每一个子串表示了一个功能块，总共有三个部分：**JWT头(header)**、**有效载荷(payload)**、**签名(signature)**，如下图所示：
-
+JWT其实就是一个很长的字符串，字符之间通过"."分隔符分为三个子串，各字串之间没有换行符。每一个子串表示了一个功能块，总共有三个部分：**JWT头(header)**、**有效载荷(payload)**、**签名(signature)**
+，如下图所示：
 
 #### JWT头
 
 JWT头是一个描述JWT元数据的JSON对象，通常如下所示：
 
 ~~~json
-{"alg": "HS256","typ": "JWT"}
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
 ~~~
 
 alg：表示签名使用的算法，默认为HMAC SHA256（写为HS256）
@@ -383,7 +406,8 @@ tools-jwt底层是基于`jjwt`进行`jwt令牌`的生成和解析的。为了方
 
 `JwtTokenClientUtils`主要是提供给网关服务的，类中只有一个`解析jwt`的方法
 
-需要注意的是tools-jwt并不是starter，所以如果只是在项目中引入他的maven坐标并不能直接使用其提供的工具类。需要在启动类上加入tools-jwt模块中定义的注解`@EnableAuthServer`或者`@EnableAuthClient`。
+需要注意的是tools-jwt并不是starter，所以如果只是在项目中引入他的maven坐标并不能直接使用其提供的工具类。需要在启动类上加入tools-jwt模块中定义的注解`@EnableAuthServer`
+或者`@EnableAuthClient`。
 
 tools-jwt使用的签名算法为`RS256`，需要我们自己的应用来提供一对公钥和私钥，然后在`application.yml`中进行配置即可。
 
@@ -443,4 +467,37 @@ tools-jwt使用的签名算法为`RS256`，需要我们自己的应用来提供�
        }
    }
    ```
-   >`@EnableAuthServer`注解包含生成和解析jwt的方法
+   > `@EnableAuthServer`注解包含生成和解析jwt的方法
+
+---
+
+## pd-tools-user
+
+tools-user模块的主要功能是自动注入登录人信息。其他应用可以通过本模块提供的`@LoginUser`注解来注入当前系统登录用户。要实现此功能需要使用到Spring提供的参数解析器组件。
+
+### 如何使用
+
+1. 启动类加上`@LoginUser`
+   ```java
+   @SpringBootApplication
+   @EnableLoginArgResolver //开启自动登录用户对象注入
+   public class MyCurrentUserApplication {
+        public static void main(String[] args) {
+            SpringApplication.run(MyCurrentUserApplication.class,args);
+        }
+   }
+   ```
+2. 编写`controller`时在参数中加上`@LoginUser SysUser user`
+   ```java
+   @RestController
+   @RequestMapping("/user")
+   public class UserController {
+   
+       @GetMapping("/getCurrentUser")
+       public SysUser getCurrentUser(@LoginUser SysUser user){//注入当前登录用户
+           System.out.println(user);
+           return user;
+       }
+   
+   }
+   ```
