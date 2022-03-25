@@ -20,6 +20,7 @@
         <module>tools-log</module>
         <module>tools-jwt</module>
         <module>tools-user</module>
+        <module>tools-core</module>
     </modules>
 
     <properties>
@@ -52,6 +53,11 @@
         <!--openfeign-->
         <openfeign.version>2.2.10.RELEASE</openfeign.version>
 
+        <!--spring cloud alibaba-->
+        <alibaba.version>2.2.7.RELEASE</alibaba.version>
+
+        <!--mybatis plus-->
+        <mybatis.plus.version>3.5.1</mybatis.plus.version>
     </properties>
 
     <dependencyManagement>
@@ -106,6 +112,16 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-openfeign</artifactId>
                 <version>${openfeign.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>${alibaba.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${mybatis.plus.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
