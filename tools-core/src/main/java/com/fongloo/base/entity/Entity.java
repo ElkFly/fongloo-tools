@@ -1,4 +1,4 @@
-package com.fongloo.base;
+package com.fongloo.base.entity;
 
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
