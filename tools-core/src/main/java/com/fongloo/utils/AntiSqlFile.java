@@ -53,7 +53,7 @@ public class AntiSqlFile {
         return map;
     }
 
-    public static String[] getSafeValues(String[] oldValues) {
+    private static String[] getSafeValues(String[] oldValues) {
         // 克隆
         if (ArrayUtil.isNotEmpty(oldValues)) {
             String[] newValues = new String[oldValues.length];
