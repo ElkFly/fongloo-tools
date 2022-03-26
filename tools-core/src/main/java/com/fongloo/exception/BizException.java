@@ -1,6 +1,6 @@
-package com.fongloo.base.exception;
+package com.fongloo.exception;
 
-import com.fongloo.base.exception.code.BaseExceptionCode;
+import com.fongloo.exception.code.BaseExceptionCode;
 
 /**
  * 业务异常

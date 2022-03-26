@@ -1,8 +1,8 @@
 package com.fongloo.base.status;
 
 import com.alibaba.fastjson.JSONObject;
-import com.fongloo.base.exception.BizException;
-import com.fongloo.base.exception.code.BaseExceptionCode;
+import com.fongloo.exception.BizException;
+import com.fongloo.exception.code.BaseExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.HashMap;

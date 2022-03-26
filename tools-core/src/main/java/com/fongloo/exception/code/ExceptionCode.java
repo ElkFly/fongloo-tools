@@ -1,4 +1,4 @@
-package com.fongloo.base.exception.code;
+package com.fongloo.exception.code;
 
 /**
  * 全局错误码 10000-15000

@@ -1,4 +1,4 @@
-package com.fongloo.base.exception.code;
+package com.fongloo.exception.code;
 
 /**
  * 异常接口类
