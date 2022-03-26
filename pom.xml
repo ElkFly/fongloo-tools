@@ -56,6 +56,9 @@
         <!--spring cloud alibaba-->
         <alibaba.version>2.2.7.RELEASE</alibaba.version>
 
+        <!--fastjson-->
+        <fastjson.version>1.2.79</fastjson.version>
+
         <!--mybatis plus-->
         <mybatis.plus.version>3.5.1</mybatis.plus.version>
     </properties>
@@ -117,6 +120,11 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
                 <version>${alibaba.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
