@@ -1,7 +1,7 @@
 package com.fongloo.context;
 
-import com.fongloo.utils.NumberHelper;
-import com.fongloo.utils.StrHelper;
+import com.fongloo.context.utils.NumberHelper;
+import com.fongloo.context.utils.StrHelper;
 
 import java.util.HashMap;
 import java.util.Map;
