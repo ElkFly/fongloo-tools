@@ -1,4 +1,4 @@
-package com.fongloo.context.utils;
+package com.fongloo.utils;
 
 /**
  * 常用字符串

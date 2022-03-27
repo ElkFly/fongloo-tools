@@ -1,4 +1,4 @@
-package com.fongloo.context.utils;
+package com.fongloo.utils;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationContext;
