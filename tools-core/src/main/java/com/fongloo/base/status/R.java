@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.fongloo.exception.BizException;
 import com.fongloo.exception.code.BaseExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +14,10 @@ import java.util.Map;
 /**
  * 状态类
  */
+@Getter
+@Setter
+@SuppressWarnings({"AlibabaClassNamingShouldBeCamel"})
+@Accessors(chain = true)
 public class R<T> {
     public static final String DEF_ERROR_MESSAGE = "系统繁忙，请稍后再试";
     public static final String HYSTRIX_ERROR_MESSAGE = "请求超时，请稍后再试";
